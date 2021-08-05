@@ -107,4 +107,4 @@ def parser(g, file_name):
 cpass = configparser.RawConfigParser()
 cpass.read('config.data')
 for i in range(len(cpass)):
-    parser(i, str(cpass[i]['phone']) + "_members.csv")
+    parser(i, "members.csv")

@@ -29,9 +29,9 @@ def inviter(i, file_name):
     cpass.read('config.data')
 
     try:
-        api_id = cpass['cred']['id']
-        api_hash = cpass['cred']['hash']
-        phone = cpass['cred']['phone']
+        api_id = cpass[i]['id']
+        api_hash = cpass[i]['hash']
+        phone = cpass[i]['phone']
         client = TelegramClient(phone, api_id, api_hash)
     except KeyError:
         os.system('clear')
@@ -125,6 +125,7 @@ def inviter(i, file_name):
 
 cpass = configparser.RawConfigParser()
 cpass.read('config.data')
+input_file = sys.argv[1]
 for i in range(len(cpass)):
-    inviter(i, str(cpass[i]['phone'])+"_members.csv")
+    inviter(i, input_file)
 
