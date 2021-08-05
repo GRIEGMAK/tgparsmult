@@ -114,6 +114,7 @@ def inviter(i, file_name):
     	        client(InviteToChannelRequest(target_group_entity,[user_to_add]))
 	           print(gr+"[+] Waiting for 10-30 Seconds...")
 	            time.sleep(random.randrange(10, 30))
+                
     	    except PeerFloodError:
 	           print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
 	        except UserPrivacyRestrictedError:
@@ -126,6 +127,11 @@ def inviter(i, file_name):
 cpass = configparser.RawConfigParser()
 cpass.read('config.data')
 input_file = sys.argv[1]
+temp = configparser.RawConfigParser()
 for i in range(len(cpass)):
-    inviter(i, input_file)
+    temp.read('temporary_config_file.data')
+    start_value = temp['invite']
+    if start_value is None: 
+        start_value = 0
+    inviter(i, input_file, start_value)
 

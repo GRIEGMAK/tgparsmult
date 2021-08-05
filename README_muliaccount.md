@@ -5,4 +5,4 @@
 
 'python smsbot.py'
 
-'python invite.py'
+'python invite.py members.csv'
