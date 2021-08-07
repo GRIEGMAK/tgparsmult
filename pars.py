@@ -19,8 +19,13 @@ by https://github.com/elizhabs
 
         """)
 
-def parser(g, file_name):
+def parser(number, file_name):
     try:
+        cpass = configparser.RawConfigParser()
+        cpass.read('config.data')
+        g = cpass.index(['phone'] == number)
+        if g is None:
+            print('Данный аккаунт в базе найти не удалось ')
         api_id = cpass[g]['id']
         api_hash = cpass[g]['hash']
         phone = cpass[g]['phone']
@@ -104,7 +109,5 @@ def parser(g, file_name):
     print(gr+'[+] Members scraped successfully.')
 
 
-cpass = configparser.RawConfigParser()
-cpass.read('config.data')
-for i in range(len(cpass)):
-    parser(i, "members.csv")
+number = sys.argv[1]
+parser(number, "members.csv")

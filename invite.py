@@ -44,8 +44,7 @@ def inviter(i, file_name):
         client.send_code_request(phone)
         os.system('clear')
         banner()
-        client.sign_in(phone, input(gr+'[+] Enter the code: '+re))
- 
+        client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
     banner()
     users = []
@@ -134,4 +133,3 @@ for i in range(len(cpass)):
     if start_value is None: 
         start_value = 0
     inviter(i, input_file, start_value)
-
