@@ -24,10 +24,11 @@ by https://github.com/elizhabs
         """)
         
 
-def inviter(i, file_name):
+def inviter(i, file_name, g_index, start_value):
     cpass = configparser.RawConfigParser()
     cpass.read('config.data')
-
+    if start_value is None:
+        start_value = 0
     try:
         api_id = cpass[i]['id']
         api_hash = cpass[i]['hash']
@@ -47,18 +48,25 @@ def inviter(i, file_name):
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
     banner()
+
     users = []
     with open(file_name, encoding='UTF-8') as f:
         rows = csv.reader(f,delimiter=",",lineterminator="\n")
         next(rows, None)
         for row in rows:
+            if count_user <= start_value:
+                continue
             user = {}
             user['username'] = row[0]
             user['id'] = int(row[1])
             user['access_hash'] = int(row[2])
             user['name'] = row[3]
             users.append(user)
- 
+            count_user += 1
+            if count_user >= start_value + 49:
+                break
+    temp = configparser.RawConfigParser()
+    temp.write(["invite"] = count_user)
     chats = []
     last_date = None
     chunk_size = 200
@@ -85,10 +93,10 @@ def inviter(i, file_name):
         print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
         i+=1
 
-    print(gr+'[+] Choose a group to add members')
-    g_index = input(gr+"[+] Enter a Number : "+re)
-    target_group=groups[int(g_index)]
- 
+    if g_index is None:
+        print(gr+'[+] Choose a group to add members')
+        g_index = input(gr+"[+] Enter a Number : "+re)
+        target_group=groups[int(g_index)] 
     target_group_entity = InputPeerChannel(target_group.id,target_group.access_hash)
  
     print(gr+"[1] add member by user ID\n[2] add member by username ")
@@ -130,6 +138,8 @@ temp = configparser.RawConfigParser()
 for i in range(len(cpass)):
     temp.read('temporary_config_file.data')
     start_value = temp['invite']
-    if start_value is None: 
+    if start_value is None:
         start_value = 0
-    inviter(i, input_file, start_value)
+    print(gr+'[+] Choose a group to add members')
+    g_index = input(gr+"[+] Enter a Number : "+re)
+    inviter(i, input_file, g_index, start_value)
