@@ -20,15 +20,20 @@ by https://github.com/elizhabs
         """)
 
 def parser(number, file_name):
+    import os
     try:
-        cpass = configparser.RawConfigParser()
-        cpass.read('config.data')
-        g = cpass.index(['phone'] == number)
-        if g is None:
+        csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
+        g = 0
+        for cpass in csv_accounts:
+            if number == cpass[2]:
+                api_id = cpass[0]
+                api_hash = cpass[1]
+                phone = cpass[2]
+                g = 1
+        if g == 0:
             print('Данный аккаунт в базе найти не удалось ')
-        api_id = cpass[g]['id']
-        api_hash = cpass[g]['hash']
-        phone = cpass[g]['phone']
+            g = input("Нажмите enter затем внесите номер в базу и перезапустите скрипт:")
+            sys.exit()
         client = TelegramClient(phone, api_id, api_hash)
     except KeyError:
         os.system('clear')
@@ -42,8 +47,6 @@ def parser(number, file_name):
         os.system('clear')
         banner()
         client.sign_in(phone, input(gr+'[+] Enter the code: '+re))
- 
-
     os.system('clear')
     banner()
     chats = []

@@ -59,14 +59,12 @@ def config_setup():
 		f.close()
 	with open(file_name,"a",encoding='UTF-8') as f:
 		cpass = csv.writer(f,delimiter=",",lineterminator="\n")
-		cpass.writerow(['id','hash', 'xphone'])
 		for i in range(accounts):
 			xid = input(gr+"[+] enter api ID : "+re)
 			xhash = input(gr+"[+] enter hash ID : "+re)
 			xphone = input(gr+"[+] enter phone number : "+re)
 			print(gr+"[+] setup complete !")
 			cpass.writerow([xid, xhash, xphone])
-	cpass.close()
 
 def merge_csv():
 	import pandas as pd
