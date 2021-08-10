@@ -24,7 +24,7 @@ by https://github.com/elizhabs
         """)
         
 
-def inviter(i, file_name, g_index, start_value, api_id, api_hash, phone):
+def inviter(file_name, g_index, start_value, api_id, api_hash, phone):
     import time
     try:
         client = TelegramClient(phone, api_id, api_hash)
@@ -44,11 +44,11 @@ def inviter(i, file_name, g_index, start_value, api_id, api_hash, phone):
     banner()
     count_user = 0
     users = []
-    with open(file_name, encoding='UTF-8') as f:
-        rows = csv.reader(f,delimiter=",",lineterminator="\n")
-        next(rows, None)
-        for row in rows:
-            if count_user >= start_value:
+    rows = csv.reader(open(file_name, "r"), delimiter=",", lineterminator="\n")
+    for row in rows:
+        if count_user >= start_value + 49:
+            break
+        if count_user >= start_value:
             user = {}
             user['username'] = row[0]
             user['id'] = int(row[1])
@@ -56,10 +56,7 @@ def inviter(i, file_name, g_index, start_value, api_id, api_hash, phone):
             user['name'] = row[3]
             users.append(user)
             count_user += 1
-            if count_user >= start_value + 49:
-                break
-    temp = configparser.RawConfigParser()
-    temp.write(["invite"] = count_user)
+
     chats = []
     last_date = None
     chunk_size = 200
@@ -100,24 +97,24 @@ def inviter(i, file_name, g_index, start_value, api_id, api_hash, phone):
     for user in users:
         n += 1
         if 1 == 1:
-	       time.sleep(1)
-	        try:
-	            print ("Adding {}".format(user['id']))
-    	        if mode == 1:
-	               if user['username'] == "":
-	                    continue
-	                user_to_add = client.get_input_entity(user['username'])
-    	        elif mode == 2:
-	               user_to_add = InputPeerUser(user['id'], user['access_hash'])
-	            else:
-	                sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
-    	        client(InviteToChannelRequest(target_group_entity,[user_to_add]))
+            time.sleep(1)
+            try:
+                print ("Adding {}".format(user['id']))
+                if mode == 1:
+                    if user['username'] == "":
+                        continue
+                    user_to_add = client.get_input_entity(user['username'])
+                elif mode == 2:
+                    user_to_add = InputPeerUser(user['id'], user['access_hash'])
+                else:
+                    sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
+                client(InviteToChannelRequest(target_group_entity,[user_to_add]))
                 start_value = start_value + 1
-	           print(gr+"[+] Waiting for 10-30 Seconds...")
-	            time.sleep(random.randrange(10, 30))
+                print(gr+"[+] Waiting for 10-30 Seconds...")
+                time.sleep(random.randrange(10, 30))
                 
-    	    except PeerFloodError:
-	           print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
+            except PeerFloodError:
+                print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
             except UserPrivacyRestrictedError:
                 print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
             except:
@@ -143,5 +140,5 @@ for cpass in csv_accounts:
     start_value = int(temp.get('START_value', 'invite'))
     if start_value is None:
         start_value = 0
-    inviter(i, input_file, g_index, start_value, api_id, api_hash, phone)
+    inviter(input_file, g_index, start_value, api_id, api_hash, phone)
     temp.set('START_value', 'invite', start_value)
