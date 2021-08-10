@@ -85,7 +85,9 @@ def parser(number, file_name):
     print(gr+'[+] Saving In file...')
     time.sleep(1)
     import os.path
-    if !os.path.exists(file_name):
+    if os.path.exists(file_name):
+        print('Данные будут записаны в файл' + file_name)
+    else:
         f = open(file_name, "w")
         f.close()
     with open(file_name,"a",encoding='UTF-8') as f:
