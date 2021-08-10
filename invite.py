@@ -24,15 +24,9 @@ by https://github.com/elizhabs
         """)
         
 
-def inviter(i, file_name, g_index, start_value):
-    cpass = configparser.RawConfigParser()
-    cpass.read('config.data')
-    if start_value is None:
-        start_value = 0
+def inviter(i, file_name, g_index, start_value, api_id, api_hash, phone):
+    import time
     try:
-        api_id = cpass[i]['id']
-        api_hash = cpass[i]['hash']
-        phone = cpass[i]['phone']
         client = TelegramClient(phone, api_id, api_hash)
     except KeyError:
         os.system('clear')
@@ -48,14 +42,13 @@ def inviter(i, file_name, g_index, start_value):
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
     banner()
-
+    count_user = 0
     users = []
     with open(file_name, encoding='UTF-8') as f:
         rows = csv.reader(f,delimiter=",",lineterminator="\n")
         next(rows, None)
         for row in rows:
-            if count_user <= start_value:
-                continue
+            if count_user >= start_value:
             user = {}
             user['username'] = row[0]
             user['id'] = int(row[1])
@@ -119,27 +112,36 @@ def inviter(i, file_name, g_index, start_value):
 	            else:
 	                sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
     	        client(InviteToChannelRequest(target_group_entity,[user_to_add]))
+                start_value = start_value + 1
 	           print(gr+"[+] Waiting for 10-30 Seconds...")
 	            time.sleep(random.randrange(10, 30))
                 
     	    except PeerFloodError:
 	           print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
-	        except UserPrivacyRestrictedError:
-    	        print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
-	       except:
-    	        traceback.print_exc()
-	            print(re+"[!] Unexpected Error")
-	            continue
+            except UserPrivacyRestrictedError:
+                print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
+            except:
+                traceback.print_exc()
+                print(re+"[!] Unexpected Error")
+                continue
 
-cpass = configparser.RawConfigParser()
-cpass.read('config.data')
+csv_accounts_file = open("accounts.csv","r+") 
+reader_file = csv.reader(csv_accounts_file) 
+value = len(list(reader_file)) 
 input_file = sys.argv[1]
 temp = configparser.RawConfigParser()
-for i in range(len(cpass)):
-    temp.read('temporary_config_file.data')
-    start_value = temp['invite']
+print(gr+'[+] Choose a group to add members')
+g_index = input(gr+"[+] Enter a Number : "+re)
+csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
+g = 0
+for cpass in csv_accounts:
+    api_id = cpass[0]
+    api_hash = cpass[1]
+    phone = cpass[2]
+    temp = configparser.RawConfigParser()
+    temp.read('config.data')
+    start_value = int(temp.get('START_value', 'invite'))
     if start_value is None:
         start_value = 0
-    print(gr+'[+] Choose a group to add members')
-    g_index = input(gr+"[+] Enter a Number : "+re)
-    inviter(i, input_file, g_index, start_value)
+    inviter(i, input_file, g_index, start_value, api_id, api_hash, phone)
+    temp.set('START_value', 'invite', start_value)

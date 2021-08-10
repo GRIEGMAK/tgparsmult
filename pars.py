@@ -33,7 +33,7 @@ def parser(number, file_name):
         if g == 0:
             print('Данный аккаунт в базе найти не удалось ')
             g = input("Нажмите enter затем внесите номер в базу и перезапустите скрипт:")
-            sys.exit()
+            sys.exit(1)
         client = TelegramClient(phone, api_id, api_hash)
     except KeyError:
         os.system('clear')
