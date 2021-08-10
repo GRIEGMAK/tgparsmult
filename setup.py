@@ -12,6 +12,7 @@ cy="\033[1;36m"
 
 import os, sys
 import time
+import csv
 
 def banner():
 	os.system('clear')
@@ -49,23 +50,23 @@ def requirements():
 def config_setup():
 	import configparser
 	banner()
-	cpass = configparser.RawConfigParser()
-	cpass.read('config.data')
-	len_array = len(cpass)
+	file_name = "accounts.csv"
 	accounts = int(input("Сколько аккаунтов планируется добавить? Введите числом:"))
-	for i in range(accounts):
-		cpass.clear()
-		cpass.add_section(i + len_array)
-		xid = input(gr+"[+] enter api ID : "+re)
-		cpass.set(i + len_array, 'id', xid)
-		xhash = input(gr+"[+] enter hash ID : "+re)
-		cpass.set(i + len_array, 'hash', xhash)
-		xphone = input(gr+"[+] enter phone number : "+re)
-		cpass.set(i + len_array, 'phone', xphone)
-		setup = open('config.data', 'a')
-		cpass.write(setup)
-		setup.close()
-		print(gr+"[+] setup complete !")
+	if os.path.exists(file_name):
+		print('Данные будут записаны в файл' + file_name)
+	else:
+		f = open(file_name, "w")
+		f.close()
+	with open(file_name,"a",encoding='UTF-8') as f:
+		cpass = csv.writer(f,delimiter=",",lineterminator="\n")
+		cpass.writerow(['id','hash', 'xphone'])
+		for i in range(accounts):
+			xid = input(gr+"[+] enter api ID : "+re)
+			xhash = input(gr+"[+] enter hash ID : "+re)
+			xphone = input(gr+"[+] enter phone number : "+re)
+			print(gr+"[+] setup complete !")
+			cpass.writerow([xid, xhash, xphone])
+	cpass.close()
 
 def merge_csv():
 	import pandas as pd
