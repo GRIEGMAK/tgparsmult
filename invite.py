@@ -29,6 +29,7 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
     import time
     try:
         client = TelegramClient(phone, api_id, api_hash)
+        print('ghbdt')
     except KeyError:
         os.system('clear')
         banner()
@@ -43,17 +44,19 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
     banner()
+    print("Привет")
     count_user = 0
     users = []
-    rows = csv.reader(open(file_name, "r"), delimiter=",")
+    with open(file_name,"r",encoding='UTF-8') as f:
+        rows = csv.reader(f, delimiter=",")
     for row in rows:
         if count_user >= start_value + 49:
             break
         if count_user >= start_value:
             user = {}
             user['username'] = row[0]
-            user['id'] = int(row[1])
-            user['access_hash'] = int(row[2])
+            user['id'] = row[1]
+            user['access_hash'] = row[2]
             user['name'] = row[3]
             users.append(user)
             count_user += 1
@@ -132,8 +135,9 @@ def addGroup(client):
 
     print(gr+'[+] Choose a group to add members')
     g_index = input(gr+"[+] Enter a Number : "+re)
-    target_group=groups[int(g_index)] 
+    target_group=groups[int(g_index)]
     return target_group
+
 
 csv_accounts_file = open("accounts.csv","r+") 
 reader_file = csv.reader(csv_accounts_file) 
