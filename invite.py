@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from telethon import client
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty, InputPeerChannel, InputPeerUser
@@ -24,7 +25,7 @@ by https://github.com/elizhabs
         """)
         
 
-def inviter(file_name, g_index, start_value, api_id, api_hash, phone):
+def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
     import time
     try:
         client = TelegramClient(phone, api_id, api_hash)
@@ -57,36 +58,10 @@ def inviter(file_name, g_index, start_value, api_id, api_hash, phone):
             users.append(user)
             count_user += 1
 
-    chats = []
-    last_date = None
-    chunk_size = 200
-    groups=[]
- 
-    result = client(GetDialogsRequest(
-             offset_date=last_date,
-             offset_id=0,
-             offset_peer=InputPeerEmpty(),
-             limit=chunk_size,
-             hash = 0
-    ))
-    chats.extend(result.chats)
- 
-    for chat in chats:
-        try:
-            if chat.megagroup== True:
-                groups.append(chat)
-        except:
-            continue
- 
-    i=0
-    for group in groups:
-        print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
-        i+=1
 
-    if g_index is None:
-        print(gr+'[+] Choose a group to add members')
-        g_index = input(gr+"[+] Enter a Number : "+re)
-        target_group=groups[int(g_index)] 
+
+    if target_group is None:
+        target_group = addGroup(client)
     target_group_entity = InputPeerChannel(target_group.id,target_group.access_hash)
  
     print(gr+"[1] add member by user ID\n[2] add member by username ")
@@ -122,15 +97,52 @@ def inviter(file_name, g_index, start_value, api_id, api_hash, phone):
                 print(re+"[!] Unexpected Error")
                 continue
 
+def addGroup(client):
+    chats = []
+    last_date = None
+    chunk_size = 200
+    groups=[]
+
+    result = client(GetDialogsRequest(
+        offset_date=last_date,
+        offset_id=0,
+        offset_peer=InputPeerEmpty(),
+        limit=chunk_size,
+        hash = 0
+    ))
+    chats.extend(result.chats)
+
+    for chat in chats:
+        try:
+            if chat.megagroup== True:
+                groups.append(chat)
+        except:
+            continue
+
+    i=0
+    for group in groups:
+        print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
+        i+=1
+
+    print(gr+'[+] Choose a group to add members')
+    g_index = input(gr+"[+] Enter a Number : "+re)
+    target_group=groups[int(g_index)] 
+    return target_group
+
 csv_accounts_file = open("accounts.csv","r+") 
 reader_file = csv.reader(csv_accounts_file) 
 value = len(list(reader_file)) 
 input_file = sys.argv[1]
 temp = configparser.RawConfigParser()
-print(gr+'[+] Choose a group to add members')
-g_index = input(gr+"[+] Enter a Number : "+re)
 csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
 g = 0
+for row in csv_accounts:
+    api_id = row[0]
+    api_hash = row[1]
+    phone = row[2]
+    break
+first_client = TelegramClient(phone, api_id, api_hash)
+target_group = addGroup(first_client)
 for cpass in csv_accounts:
     api_id = cpass[0]
     api_hash = cpass[1]
@@ -140,5 +152,5 @@ for cpass in csv_accounts:
     start_value = int(temp.get('START_value', 'invite'))
     if start_value is None:
         start_value = 0
-    inviter(input_file, g_index, start_value, api_id, api_hash, phone)
+    inviter(input_file, target_group, start_value, api_id, api_hash, phone)
     temp.set('START_value', 'invite', start_value)
