@@ -95,7 +95,6 @@ def parser(number, file_name):
         f.close()
     with open(file_name,"a",encoding='UTF-8') as f:
         writer = csv.writer(f,delimiter=",",lineterminator="\n")
-        writer.writerow(['username','user id', 'access hash','name','group', 'group id'])
         for user in all_participants:
             if user.username:
                 username= user.username
