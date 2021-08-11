@@ -49,17 +49,17 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
     users = []
     with open(file_name,"r",encoding='UTF-8') as f:
         rows = csv.reader(f, delimiter=",")
-    for row in rows:
-        if count_user >= start_value + 49:
-            break
-        if count_user >= start_value:
-            user = {}
-            user['username'] = row[0]
-            user['id'] = row[1]
-            user['access_hash'] = row[2]
-            user['name'] = row[3]
-            users.append(user)
-            count_user += 1
+        for row in rows:
+            if count_user >= start_value + 49:
+                break
+            if count_user >= start_value:
+                user = {}
+                user['username'] = row[0]
+                user['id'] = row[1]
+                user['access_hash'] = row[2]
+                user['name'] = row[3]
+                users.append(user)
+                count_user += 1
 
 
 
