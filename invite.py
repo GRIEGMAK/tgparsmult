@@ -159,7 +159,7 @@ for cpass in csv_accounts:
         start_value = int(temp.get('START_value', 'invite'))
     except:
         temp.add_section('START_value')
-        temp.set('START_value', 'invite', start_value)
+        temp.set('START_value', 'invite', 0)
         setup = open('config.data', 'w')
         temp.write(setup)
         setup.close()
