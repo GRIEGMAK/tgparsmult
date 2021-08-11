@@ -7,3 +7,4 @@ number = номер с которого будет парситься
 'python invite.py members.csv'
 
 'python smsbot.py'
+
