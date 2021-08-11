@@ -25,11 +25,10 @@ by https://github.com/elizhabs
         """)
         
 
-def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
+def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode):
     import time
     try:
         client = TelegramClient(phone, api_id, api_hash)
-        print('ghbdt')
     except KeyError:
         os.system('clear')
         banner()
@@ -44,7 +43,6 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
     banner()
-    print("Привет")
     count_user = 0
     users = []
     with open(file_name,"r",encoding='UTF-8') as f:
@@ -63,12 +61,9 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
 
 
 
-    if target_group is None:
-        target_group = addGroup(client)
     target_group_entity = InputPeerChannel(target_group.id,target_group.access_hash)
  
-    print(gr+"[1] add member by user ID\n[2] add member by username ")
-    mode = int(input(gr+"Input : "+re)) 
+
     n = 0
     print(users)
     print('before for') 
@@ -100,43 +95,43 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
                 print(re+"[!] Unexpected Error")
                 continue
 
-def addGroup(client):
-    client.connect()
-    if not client.is_user_authorized():
-        client.send_code_request(phone)
-        os.system('clear')
-        banner()
-        client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
+# def addGroup(client):
+#     client.connect()
+#     if not client.is_user_authorized():
+#         client.send_code_request(phone)
+#         os.system('clear')
+#         banner()
+#         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
  
-    chats = []
-    last_date = None
-    chunk_size = 200
-    groups=[]
-    result = client(GetDialogsRequest(
-        offset_date=last_date,
-        offset_id=0,
-        offset_peer=InputPeerEmpty(),
-        limit=chunk_size,
-        hash = 0
-    ))
-    chats.extend(result.chats)
+#     chats = []
+#     last_date = None
+#     chunk_size = 200
+#     groups=[]
+#     result = client(GetDialogsRequest(
+#         offset_date=last_date,
+#         offset_id=0,
+#         offset_peer=InputPeerEmpty(),
+#         limit=chunk_size,
+#         hash = 0
+#     ))
+#     chats.extend(result.chats)
 
-    for chat in chats:
-        try:
-            if chat.megagroup== True:
-                groups.append(chat)
-        except:
-            continue
+#     for chat in chats:
+#         try:
+#             if chat.megagroup== True:
+#                 groups.append(chat)
+#         except:
+#             continue
 
-    i=0
-    for group in groups:
-        print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
-        i+=1
+#     i=0
+#     for group in groups:
+#         print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
+#         i+=1
 
-    print(gr+'[+] Choose a group to add members')
-    g_index = input(gr+"[+] Enter a Number : "+re)
-    target_group=groups[int(g_index)]
-    return target_group
+#     print(gr+'[+] Choose a group to add members')
+#     g_index = input(gr+"[+] Enter a Number : "+re)
+#     target_group=groups[int(g_index)]
+#     return target_group
 
 
 csv_accounts_file = open("accounts.csv","r+") 
@@ -151,8 +146,46 @@ for row in csv_accounts:
     api_hash = row[1]
     phone = row[2]
     break
-first_client = TelegramClient(phone, api_id, api_hash)
-target_group = addGroup(first_client)
+client = TelegramClient(phone, api_id, api_hash)
+client.connect()
+if not client.is_user_authorized():
+    client.send_code_request(phone)
+    os.system('clear')
+    banner()
+    client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
+
+chats = []
+last_date = None
+chunk_size = 200
+groups=[]
+result = client(GetDialogsRequest(
+    offset_date=last_date,
+    offset_id=0,
+    offset_peer=InputPeerEmpty(),
+    limit=chunk_size,
+    hash = 0
+))
+chats.extend(result.chats)
+n = 0
+for chat in chats:
+    try:
+        if chat.megagroup== True:
+            groups.append(chat)
+            print("-------" * 10)
+    except:
+        continue
+
+    i=0
+    for group in groups:
+        print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
+        i+=1
+
+print(gr+'[+] Choose a group to add members')
+g_index = input(gr+"[+] Enter a Number : "+re)
+target_group=groups[int(g_index)]
+print(gr+"[1] add member by user ID\n[2] add member by username ")
+mode = int(input(gr+"Input : "+re)) 
+csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
 for cpass in csv_accounts:
     api_id = cpass[0]
     api_hash = cpass[1]
@@ -168,6 +201,6 @@ for cpass in csv_accounts:
         temp.write(setup)
         setup.close()
         start_value = 0
-    inviter(input_file, target_group, start_value, api_id, api_hash, phone)
+    inviter(input_file, target_group, start_value, api_id, api_hash, phone, mode)
     temp.read('config.data')
     temp.set('START_value', 'invite', start_value)
