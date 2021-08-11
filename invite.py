@@ -45,7 +45,7 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
     banner()
     count_user = 0
     users = []
-    rows = csv.reader(open(file_name, "r"), delimiter=",", lineterminator="\n")
+    rows = csv.reader(open(file_name, "r"), delimiter=",")
     for row in rows:
         if count_user >= start_value + 49:
             break
