@@ -154,9 +154,16 @@ for cpass in csv_accounts:
     api_hash = cpass[1]
     phone = cpass[2]
     temp = configparser.RawConfigParser()
-    temp.read('config.data')
-    start_value = int(temp.get('START_value', 'invite'))
-    if start_value is None:
+    try:
+        temp.read('config.data')
+        start_value = int(temp.get('START_value', 'invite'))
+    except:
+        temp.add_section('START_value')
+        temp.set('START_value', 'invite', start_value)
+        setup = open('config.data', 'w')
+        temp.write(setup)
+        setup.close()
         start_value = 0
     inviter(input_file, target_group, start_value, api_id, api_hash, phone)
+    temp.read('config.data')
     temp.set('START_value', 'invite', start_value)
