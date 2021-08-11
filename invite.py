@@ -98,11 +98,17 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone):
                 continue
 
 def addGroup(client):
+    client.connect()
+    if not client.is_user_authorized():
+        client.send_code_request(phone)
+        os.system('clear')
+        banner()
+        client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
+ 
     chats = []
     last_date = None
     chunk_size = 200
     groups=[]
-
     result = client(GetDialogsRequest(
         offset_date=last_date,
         offset_id=0,

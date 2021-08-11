@@ -28,9 +28,11 @@ class main():
         try:
             cpass = configparser.RawConfigParser()
             cpass.read('config.data')
-            api_id = cpass[g]['id']
-            api_hash = cpass[g]['hash']
-            phone = cpass[g]['phone']
+            csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
+            for cpass in csv_accounts:
+                api_id = cpass[0]
+                api_hash = cpass[1]
+                phone = cpass[2]
         except KeyError:
             os.system('clear')
             main.banner()
@@ -94,11 +96,10 @@ class main():
         print("Done. Message sent to all users.")
 
     def sms_multiaccount():
-        pause = int(input(gr+"Enter timing in secunds"+re))
         cpass = configparser.RawConfigParser()
         cpass.read('config.data')
         for i in range(len(cpass)):
-            self.send_sms(i, str(cpass[i + 1]['phone'])+"_members.csv")
+            main.send_sms(i, "members.csv")
 
 
 main.sms_multiaccount()
