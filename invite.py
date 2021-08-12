@@ -176,10 +176,10 @@ for chat in chats:
     except:
         continue
 
-    i=0
-    for group in groups:
-        print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
-        i+=1
+i=0
+for group in groups:
+    print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
+    i+=1
 
 print(gr+'[+] Choose a group to add members')
 g_index = input(gr+"[+] Enter a Number : "+re)
