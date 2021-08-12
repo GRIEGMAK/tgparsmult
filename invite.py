@@ -43,6 +43,7 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
     banner()
+    print('Start with:', start_value)
     count_user = 0
     users = []
     with open(file_name,"r",encoding='UTF-8') as f:
@@ -57,18 +58,14 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
                 user['access_hash'] = int(row[2])
                 user['name'] = row[3]
                 users.append(user)
-                count_user += 1
+            count_user +=1
 
 
 
     target_group_entity = InputPeerChannel(target_group.id,target_group.access_hash)
- 
 
-    n = 0
-    print(users)
     print('before for') 
     for user in users:
-        n += 1
         time.sleep(1)
         try:
             print ("Adding {}".format(user['id']))
@@ -82,10 +79,15 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
             else:
                 sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
             client(InviteToChannelRequest(target_group_entity,[user_to_add]))
-            start_value = start_value + 1
+            start_value += 1
             print(gr+"[+] Waiting for 10-30 Seconds...")
-            time.sleep(random.randrange(10, 30))
-                
+            # time.sleep(random.randrange(10, 30))
+            temp = configparser.RawConfigParser()
+            temp.read('config.data')
+            temp.set('START_value', 'invite', start_value)
+            with open('config.data', "w") as config_file:
+                temp.write(config_file)
+            print(start_value)
         except PeerFloodError:
             print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
         except UserPrivacyRestrictedError:
@@ -95,44 +97,6 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
             print(re+"[!] Unexpected Error")
             continue
     client.disconnect()
-
-# def addGroup(client):
-#     client.connect()
-#     if not client.is_user_authorized():
-#         client.send_code_request(phone)
-#         os.system('clear')
-#         banner()
-#         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
- 
-#     chats = []
-#     last_date = None
-#     chunk_size = 200
-#     groups=[]
-#     result = client(GetDialogsRequest(
-#         offset_date=last_date,
-#         offset_id=0,
-#         offset_peer=InputPeerEmpty(),
-#         limit=chunk_size,
-#         hash = 0
-#     ))
-#     chats.extend(result.chats)
-
-#     for chat in chats:
-#         try:
-#             if chat.megagroup== True:
-#                 groups.append(chat)
-#         except:
-#             continue
-
-#     i=0
-#     for group in groups:
-#         print(gr+'['+cy+str(i)+gr+']'+cy+' - '+group.title)
-#         i+=1
-
-#     print(gr+'[+] Choose a group to add members')
-#     g_index = input(gr+"[+] Enter a Number : "+re)
-#     target_group=groups[int(g_index)]
-#     return target_group
 
 
 csv_accounts_file = open("accounts.csv","r+") 
@@ -203,5 +167,3 @@ for cpass in csv_accounts:
         setup.close()
         start_value = 0
     inviter(input_file, target_group, start_value, api_id, api_hash, phone, mode)
-    temp.read('config.data')
-    temp.set('START_value', 'invite', start_value)
