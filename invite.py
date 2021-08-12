@@ -53,8 +53,8 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
             if count_user >= start_value:
                 user = {}
                 user['username'] = row[0]
-                user['id'] = row[1]
-                user['access_hash'] = row[2]
+                user['id'] = int(row[1])
+                user['access_hash'] = int(row[2])
                 user['name'] = row[3]
                 users.append(user)
                 count_user += 1
@@ -69,32 +69,32 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
     print('before for') 
     for user in users:
         n += 1
-        if 1 == 1:
-            time.sleep(1)
-            try:
-                print ("Adding {}".format(user['id']))
-                if mode == 1:
-                    if user['username'] == "":
-                        continue
-                    user_to_add = client.get_input_entity(user['username'])
-                elif mode == 2:
-                    user_to_add = InputPeerUser(user['id'], user['access_hash'])
-                else:
-                    sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
-                client(InviteToChannelRequest(target_group_entity,[user_to_add]))
-                print('привет')
-                start_value = start_value + 1
-                print(gr+"[+] Waiting for 10-30 Seconds...")
-                time.sleep(random.randrange(10, 30))
+        time.sleep(1)
+        try:
+            print ("Adding {}".format(user['id']))
+            if mode == 2:
+                print()
+                if user['username'] == "":
+                    continue
+                user_to_add = client.get_input_entity(user['username'])
+            elif mode == 1:
+                user_to_add = InputPeerUser(user['id'], user['access_hash'])
+            else:
+                sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
+            client(InviteToChannelRequest(target_group_entity,[user_to_add]))
+            start_value = start_value + 1
+            print(gr+"[+] Waiting for 10-30 Seconds...")
+            time.sleep(random.randrange(10, 30))
                 
-            except PeerFloodError:
-                print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
-            except UserPrivacyRestrictedError:
-                print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
-            except:
-                traceback.print_exc()
-                print(re+"[!] Unexpected Error")
-                continue
+        except PeerFloodError:
+            print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
+        except UserPrivacyRestrictedError:
+            print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
+        except:
+            traceback.print_exc()
+            print(re+"[!] Unexpected Error")
+            continue
+    client.disconnect()
 
 # def addGroup(client):
 #     client.connect()
@@ -172,7 +172,6 @@ for chat in chats:
     try:
         if chat.megagroup== True:
             groups.append(chat)
-            print("-------" * 10)
     except:
         continue
 
