@@ -34,8 +34,8 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
         banner()
         print(re+"[!] run python3 setup.py first !!\n")
         sys.exit(1)
-
-    client.connect()
+    if client.is_connected() == False:
+        client.connect()
     if not client.is_user_authorized():
         client.send_code_request(phone)
         os.system('clear')
@@ -82,6 +82,7 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
                 else:
                     sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
                 client(InviteToChannelRequest(target_group_entity,[user_to_add]))
+                print('привет')
                 start_value = start_value + 1
                 print(gr+"[+] Waiting for 10-30 Seconds...")
                 time.sleep(random.randrange(10, 30))
@@ -183,6 +184,7 @@ for chat in chats:
 print(gr+'[+] Choose a group to add members')
 g_index = input(gr+"[+] Enter a Number : "+re)
 target_group=groups[int(g_index)]
+client.disconnect()
 print(gr+"[1] add member by user ID\n[2] add member by username ")
 mode = int(input(gr+"Input : "+re)) 
 csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
