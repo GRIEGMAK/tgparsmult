@@ -25,12 +25,13 @@ by https://github.com/elizhabs
         """)
         
 
-def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode):
-    import time
+def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, invite_count, mode):
+    import time, os
+    finished = 0
     try:
         client = TelegramClient(phone, api_id, api_hash)
     except KeyError:
-        os.system('clear')
+        # os.system('clear')
         banner()
         print(re+"[!] run python3 setup.py first !!\n")
         sys.exit(1)
@@ -38,18 +39,46 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
         client.connect()
     if not client.is_user_authorized():
         client.send_code_request(phone)
-        os.system('clear')
+        # os.system('clear')
         banner()
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
-    os.system('clear')
+    # os.system('clear')
     banner()
+    chats = []
+    last_date = None
+    chunk_size = 200
+    groups=[]
+    result = client(GetDialogsRequest(
+        offset_date=last_date,
+        offset_id=0,
+        offset_peer=InputPeerEmpty(),
+        limit=chunk_size,
+        hash = 0
+    ))
+    chats.extend(result.chats)
+    n = 0
+    for chat in chats:
+        try:
+            if chat.megagroup== True:
+                groups.append(chat)
+        except:
+            continue
+
+    i = 0
+    for group in groups:
+        if group.id == target_group_id:
+            target_group = group
+        i += 1
+    if target_group is None:
+        return 0
+
     print('Start with:', start_value)
     count_user = 0
     users = []
     with open(file_name,"r",encoding='UTF-8') as f:
         rows = csv.reader(f, delimiter=",")
         for row in rows:
-            if count_user >= start_value + 49:
+            if count_user >= start_value + invite_count - 1:
                 break
             if count_user >= start_value:
                 user = {}
@@ -58,15 +87,17 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
                 user['access_hash'] = int(row[2])
                 user['name'] = row[3]
                 users.append(user)
+                if user == []:
+                    finished = 1
             count_user +=1
-
-
 
     target_group_entity = InputPeerChannel(target_group.id,target_group.access_hash)
 
     print('before for') 
     for user in users:
         time.sleep(1)
+        if user is None and finished == 1:
+            sys.exit(1)
         try:
             print ("Adding {}".format(user['id']))
             if mode == 2:
@@ -78,7 +109,10 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
                 user_to_add = InputPeerUser(user['id'], user['access_hash'])
             else:
                 sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
+            print(type(target_group_entity))
+            print(type(user['id']), type(user['access_hash']))
             client(InviteToChannelRequest(target_group_entity,[user_to_add]))
+            print('finished', finished)
             start_value += 1
             print(gr+"[+] Waiting for 10-30 Seconds...")
             time.sleep(random.randrange(10, 30))
@@ -96,8 +130,14 @@ def inviter(file_name, target_group, start_value, api_id, api_hash, phone, mode)
             traceback.print_exc()
             print(re+"[!] Unexpected Error")
             continue
+    client.log_out()
     client.disconnect()
-
+    import os
+    files= next(os.walk(r'./'))[2]
+    for filename in files:
+        ex=filename.split(".")[-1]
+        if ex=='session':
+            os.unlink(filename)
 
 csv_accounts_file = open("accounts.csv","r+") 
 reader_file = csv.reader(csv_accounts_file) 
@@ -110,12 +150,13 @@ for row in csv_accounts:
     api_id = row[0]
     api_hash = row[1]
     phone = row[2]
+    invite_count = row[3]
     break
 client = TelegramClient(phone, api_id, api_hash)
 client.connect()
 if not client.is_user_authorized():
     client.send_code_request(phone)
-    os.system('clear')
+    # os.system('clear')
     banner()
     client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
 
@@ -147,7 +188,17 @@ for group in groups:
 print(gr+'[+] Choose a group to add members')
 g_index = input(gr+"[+] Enter a Number : "+re)
 target_group=groups[int(g_index)]
+target_group_id = target_group.id
+client.log_out()
 client.disconnect()
+import os
+import shutil
+files= next(os.walk(r'./'))[2]
+for filename in files:
+    ex=filename.split(".")[-1]
+    if ex=='session':
+       os.remove(filename)
+
 print(gr+"[1] add member by user ID\n[2] add member by username ")
 mode = int(input(gr+"Input : "+re)) 
 csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
@@ -155,6 +206,7 @@ for cpass in csv_accounts:
     api_id = cpass[0]
     api_hash = cpass[1]
     phone = cpass[2]
+    invite_count = cpass[3]
     temp = configparser.RawConfigParser()
     try:
         temp.read('config.data')
@@ -166,4 +218,4 @@ for cpass in csv_accounts:
         temp.write(setup)
         setup.close()
         start_value = 0
-    inviter(input_file, target_group, start_value, api_id, api_hash, phone, mode)
+    inviter(input_file, target_group_id, start_value, api_id, api_hash, phone, invite_count, mode)

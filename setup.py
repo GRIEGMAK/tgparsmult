@@ -46,6 +46,34 @@ def requirements():
 	banner()
 	print(gr+"[+] requierments Installed.\n")
 
+def change_invite_count():
+	import configparser
+	banner()
+	phone = input('Введите номер: ')
+	csv_accounts = csv.reader(open('accounts.csv', "r"), delimiter=",")
+	g = 0
+	for cpass in csv_accounts:
+		if phone == cpass[2]:
+			invite_count = cpass[3]
+			g = 1
+		if g == 0:
+			print('Данный аккаунт в базе найти не удалось ')
+			g = input("Нажмите enter затем внесите номер в базу и перезапустите скрипт:")
+			sys.exit(1)
+	print("Сейчас количество инвайтов на данном аккаунте:", invite_count)
+	print("""	Значение которое вы введете не должно превышать 50 
+	а так же не должно содержать иных символов кроме числа
+	если быть точнее 1-50""")
+	xinvite = int(input('Введите число инвайтов на номер ' + phone + ': '))
+	if xinvite is None or xinvite > 50:
+		sys.exit('Перезапустите программу потому как значение вы ввели не корректное')
+	r = csv.reader(open('accounts.csv'))
+	lines = list(r)
+	for line in lines:
+		if phone == line[2]:
+			line[3] = xinvite
+	writer = csv.writer(open('accounts.csv', 'w'))
+	writer.writerows(lines)
 
 def config_setup():
 	import configparser
@@ -53,18 +81,21 @@ def config_setup():
 	file_name = "accounts.csv"
 	accounts = int(input("Сколько аккаунтов планируется добавить? Введите числом:"))
 	if os.path.exists(file_name):
-		print('Данные будут записаны в файл' + file_name)
+		print('Данные будут записаны в файл ' + file_name)
 	else:
 		f = open(file_name, "w")
 		f.close()
 	with open(file_name,"a",encoding='UTF-8') as f:
 		cpass = csv.writer(f,delimiter=",",lineterminator="\n")
 		for i in range(accounts):
-			xid = input(gr+"[+] enter api ID : "+re)
-			xhash = input(gr+"[+] enter hash ID : "+re)
-			xphone = input(gr+"[+] enter phone number : "+re)
+			xid = input(gr+"[+] enter api ID: "+re)
+			xhash = input(gr+"[+] enter hash ID: "+re)
+			xphone = input(gr+"[+] enter phone number: "+re)
+			xinvite = input(gr+"[+] enter invite count: "+re)
+			if(xinvite == "" or not xinvite.isdigit()):
+				xinvite = 50
 			print(gr+"[+] setup complete !")
-			cpass.writerow([xid, xhash, xphone])
+			cpass.writerow([xid, xhash, xphone, xinvite])
 
 def merge_csv():
 	import pandas as pd
@@ -101,6 +132,8 @@ try:
 	if any ([sys.argv[1] == '--config', sys.argv[1] == '-c']):
 		print(gr+'['+cy+'+'+gr+']'+cy+' selected module : '+re+sys.argv[1])
 		config_setup()
+	elif any ([sys.argv[1] == "--changeinvite", sys.argv[1] == '-cic']):
+		change_invite_count()
 	elif any ([sys.argv[1] == '--merge', sys.argv[1] == '-m']):
 		print(gr+'['+cy+'+'+gr+']'+cy+' selected module : '+re+sys.argv[1])
 		merge_csv()
@@ -114,6 +147,7 @@ try:
 		print("""$ python3 setup.py -m file1.csv file2.csv
 			
 	( --config  / -c ) setup api configration
+	( --changeinvite / -cic ) изменения количества инвайтов на аккаунт
 	( --merge   / -m ) merge 2 .csv files in one 
 	( --update  / -u ) update tool to latest version
 	( --install / -i ) install requirements
