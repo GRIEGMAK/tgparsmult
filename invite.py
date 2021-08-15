@@ -78,7 +78,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
     with open(file_name,"r",encoding='UTF-8') as f:
         rows = csv.reader(f, delimiter=",")
         for row in rows:
-            if count_user >= start_value + invite_count - 1:
+            if count_user >= start_value + int(invite_count):
                 break
             if count_user >= start_value:
                 user = {}
