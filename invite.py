@@ -31,7 +31,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
     try:
         client = TelegramClient(phone, api_id, api_hash)
     except KeyError:
-        # os.system('clear')
+        os.system('clear')
         banner()
         print(re+"[!] run python3 setup.py first !!\n")
         sys.exit(1)
@@ -39,10 +39,10 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
         client.connect()
     if not client.is_user_authorized():
         client.send_code_request(phone)
-        # os.system('clear')
+        os.system('clear')
         banner()
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
-    # os.system('clear')
+    os.system('clear')
     banner()
     chats = []
     last_date = None
@@ -101,7 +101,6 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
         try:
             print ("Adding {}".format(user['id']))
             if mode == 2:
-                print()
                 if user['username'] == "":
                     continue
                 user_to_add = client.get_input_entity(user['username'])
@@ -109,10 +108,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
                 user_to_add = InputPeerUser(user['id'], user['access_hash'])
             else:
                 sys.exit(re+"[!] Invalid Mode Selected. Please Try Again.")
-            print(type(target_group_entity))
-            print(type(user['id']), type(user['access_hash']))
             client(InviteToChannelRequest(target_group_entity,[user_to_add]))
-            print('finished', finished)
             start_value += 1
             print(gr+"[+] Waiting for 10-30 Seconds...")
             time.sleep(random.randrange(10, 30))
@@ -156,7 +152,7 @@ client = TelegramClient(phone, api_id, api_hash)
 client.connect()
 if not client.is_user_authorized():
     client.send_code_request(phone)
-    # os.system('clear')
+    os.system('clear')
     banner()
     client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
 
