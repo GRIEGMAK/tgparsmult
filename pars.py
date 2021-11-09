@@ -5,6 +5,7 @@ import os, sys
 import configparser
 import csv
 import time
+from telethon import connection
 
 re="\033[1;31m"
 gr="\033[1;32m"
@@ -18,6 +19,29 @@ def banner():
 by https://github.com/elizhabs
 
         """)
+def connectionTelegramAccount(phone, api_id, api_hash, proxy_number, is_proxy):
+    if is_proxy:
+        csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
+        g = 0
+        numbering = 0
+        for cpass in csv_accounts:
+            if proxy_number > csv_accounts.lenght():
+                proxy_number = 0
+            if numbering == proxy_number:
+                proxy_server = cpass[0]
+                proxy_port = cpass[1]
+                proxy_key = cpass[2]
+            numbering += 1
+            g = 1
+        if g == 0:
+            print("Проксей нет, подключаемся без них")
+            client = TelegramClient(phone, api_id, api_hash)
+        else:
+            proxy = (proxy_server, proxy_port, proxy_key)
+            client = TelegramClient(phone, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
+    else:
+        client = TelegramClient(phone, api_id, api_hash)
+    return client
 
 def parser(number, file_name):
     import os
@@ -34,7 +58,7 @@ def parser(number, file_name):
             print('Данный аккаунт в базе найти не удалось ')
             g = input("Нажмите enter затем внесите номер в базу и перезапустите скрипт:")
             sys.exit(1)
-        client = TelegramClient(phone, api_id, api_hash)
+        client = connectionTelegramAccount(phone, api_id, api_hash, number)
     except KeyError:
         os.system('clear')
         banner()

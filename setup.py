@@ -97,6 +97,26 @@ def config_setup():
 			print(gr+"[+] setup complete !")
 			cpass.writerow([xid, xhash, xphone, xinvite])
 
+def add_proxy():
+	file_name = "proxy.csv"
+	count_proxy = int(input("Сколько прокси планируется добавить?"))
+	if os.path.exists(file_name):
+		print('Данные будут записаны в файл ' + file_name)
+	else:
+		f = open(file_name, "w")
+		f.close()
+	with open(file_name,"a",encoding='UTF-8') as f:
+		cpassproxy = csv.writer(f,delimiter=",",lineterminator="\n")
+		for i in range(count_proxy):
+			xproxy_serv = input("Введите значение прокси сервера")
+			xproxy_port = input("Введите значение порта у прокси сервера")
+			xproxy_key = input("Введите значение ключа входа на сервер")
+			cpassproxy.writerow([xproxy_serv, xproxy_port, xproxy_key])
+			
+
+			
+
+
 def merge_csv():
 	import pandas as pd
 	import sys
@@ -134,6 +154,8 @@ try:
 		config_setup()
 	elif any ([sys.argv[1] == "--changeinvite", sys.argv[1] == '-cic']):
 		change_invite_count()
+	elif any ([sys.argv[1] == "--addproxy", sys.argv[1] == '-ap']):
+		add_proxy()
 	elif any ([sys.argv[1] == '--merge', sys.argv[1] == '-m']):
 		print(gr+'['+cy+'+'+gr+']'+cy+' selected module : '+re+sys.argv[1])
 		merge_csv()
@@ -148,6 +170,7 @@ try:
 			
 	( --config  / -c ) setup api configration
 	( --changeinvite / -cic ) изменения количества инвайтов на аккаунт
+	( --addproxy / --ap ) добавление прокси
 	( --merge   / -m ) merge 2 .csv files in one 
 	( --update  / -u ) update tool to latest version
 	( --install / -i ) install requirements
