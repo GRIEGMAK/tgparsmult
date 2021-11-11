@@ -9,3 +9,10 @@ number = номер с которого будет парситься
 'python invite.py members.csv'
 
 'python smsbot.py'
+
+
+Добавление проксей
+
+python setup.py -ap
+
+в основном добавлены прокси внутрь и парса и инвайта

@@ -24,12 +24,38 @@ def banner():
 by https://github.com/elizhabs
         """)
         
+def connectionTelegramAccount(phone, api_id, api_hash):
+    csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
+    g = 0
+    numbering = 1
+    i = 1
+    for cpass in csv_accounts:
+        print (i, ")", cpass[0], cpass[1])
+        i += 1
+    proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
+    if proxy_number != 0:
+        for cpass in csv_accounts:
+            if numbering == proxy_number:
+                proxy_server = cpass[0]
+                proxy_port = cpass[1]
+                proxy_key = cpass[2]
+            numbering += 1
+            g = 1
+        if g == 0:
+            print("Прокси нет, подключаемся без них")
+            client = TelegramClient(phone, api_id, api_hash)
+        else:
+            proxy = (proxy_server, proxy_port, proxy_key)
+            client = TelegramClient(phone, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
+    else:
+        client = TelegramClient(phone, api_id, api_hash)
+    return client
 
 def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, invite_count, mode):
     import time, os
     finished = 0
     try:
-        client = TelegramClient(phone, api_id, api_hash)
+        client = connectionTelegramAccount(phone, api_id, api_hash)
     except KeyError:
         os.system('clear')
         banner()

@@ -170,7 +170,7 @@ try:
 			
 	( --config  / -c ) setup api configration
 	( --changeinvite / -cic ) изменения количества инвайтов на аккаунт
-	( --addproxy / --ap ) добавление прокси
+	( --addproxy / -ap ) добавление прокси
 	( --merge   / -m ) merge 2 .csv files in one 
 	( --update  / -u ) update tool to latest version
 	( --install / -i ) install requirements

@@ -19,14 +19,17 @@ def banner():
 by https://github.com/elizhabs
 
         """)
-def connectionTelegramAccount(phone, api_id, api_hash, proxy_number, is_proxy):
-    if is_proxy:
-        csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
-        g = 0
-        numbering = 0
+def connectionTelegramAccount(phone, api_id, api_hash):
+    csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
+    g = 0
+    numbering = 1
+    i = 1
+    for cpass in csv_accounts:
+        print (i, ")", cpass[0], cpass[1])
+        i += 1
+    proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
+    if proxy_number != 0:
         for cpass in csv_accounts:
-            if proxy_number > csv_accounts.lenght():
-                proxy_number = 0
             if numbering == proxy_number:
                 proxy_server = cpass[0]
                 proxy_port = cpass[1]
@@ -34,7 +37,7 @@ def connectionTelegramAccount(phone, api_id, api_hash, proxy_number, is_proxy):
             numbering += 1
             g = 1
         if g == 0:
-            print("Проксей нет, подключаемся без них")
+            print("Прокси нет, подключаемся без них")
             client = TelegramClient(phone, api_id, api_hash)
         else:
             proxy = (proxy_server, proxy_port, proxy_key)
@@ -58,7 +61,8 @@ def parser(number, file_name):
             print('Данный аккаунт в базе найти не удалось ')
             g = input("Нажмите enter затем внесите номер в базу и перезапустите скрипт:")
             sys.exit(1)
-        client = connectionTelegramAccount(phone, api_id, api_hash, number)
+        client = connectionTelegramAccount(phone, api_id, api_hash)
+        
     except KeyError:
         os.system('clear')
         banner()
