@@ -17,7 +17,7 @@ Telegram spamer, inviter and parser
 * Termux:
   * `pkg update`
   * `pkg install python3 python3-pip git -y`
-  * `git clone https://github.com/elizhabs/TGPars/`
+  * `git clone https://github.com/GRIEGMAK/tgparsmult.git`
   * `cd TGPars`
   * `python setup.py -i`
   * `Then go to [my.telegram.org] and login in your account`
@@ -27,7 +27,7 @@ Telegram spamer, inviter and parser
 * Linux
   * `sudo apt update`
   * `sudo apt install python3 python3-pip git -y`
-  * `git clone https://github.com/elizhabs/TGPars/`
+  * `git clone https://github.com/GRIEGMAK/tgparsmult.git`
   * `cd TGPars`
   * `python setup.py -i`
   * `Then go to [my.telegram.org] and login in your account`
@@ -42,3 +42,22 @@ Telegram spamer, inviter and parser
   * `python invite.py members.csv`
 * Spam
   * `python smsbot.py members.csv`
+
+'python setup.py -i'
+'python setup.py -c'
+
+'python pars.py number'
+number = номер с которого будет парситься 
+
+'python setup.py -cic'
+
+'python invite.py members.csv'
+
+'python smsbot.py'
+
+
+Добавление проксей
+
+python setup.py -ap
+
+в основном добавлены прокси внутрь и парса и инвайта

@@ -11,6 +11,7 @@ import csv
 import traceback
 import time
 import random
+from telethon import connection
 
 re="\033[1;31m"
 gr="\033[1;32m"
@@ -29,6 +30,10 @@ def connectionTelegramAccount(phone, api_id, api_hash):
     g = 0
     numbering = 1
     i = 1
+    file_name = 'proxy.csv'
+    if not os.path.exists(file_name):
+        f = open(file_name, "w")
+        f.close()
     for cpass in csv_accounts:
         print (i, ")", cpass[0], cpass[1])
         i += 1
@@ -197,7 +202,7 @@ chats.extend(result.chats)
 n = 0
 for chat in chats:
     try:
-        if chat.megagroup== True:
+        if chat == True:
             groups.append(chat)
     except:
         continue

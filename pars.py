@@ -1,6 +1,6 @@
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
-from telethon.tl.types import InputPeerEmpty
+from telethon.tl.types import Channel, InputPeerEmpty
 import os, sys
 import configparser
 import csv
@@ -20,6 +20,10 @@ by https://github.com/elizhabs
 
         """)
 def connectionTelegramAccount(phone, api_id, api_hash):
+    file_name = 'proxy.csv'
+    if not os.path.exists(file_name):
+        f = open(file_name, "w")
+        f.close()
     csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
     g = 0
     numbering = 1
@@ -68,7 +72,6 @@ def parser(number, file_name):
         banner()
         print(re+"[!] run python3 setup.py first !!\n")
         sys.exit(1)
-
     client.connect()
     if not client.is_user_authorized():
         client.send_code_request(phone)
@@ -81,7 +84,7 @@ def parser(number, file_name):
     last_date = None
     chunk_size = 200
     groups=[]
- 
+
     result = client(GetDialogsRequest(
              offset_date=last_date,
              offset_id=0,
@@ -90,10 +93,9 @@ def parser(number, file_name):
              hash = 0
     ))
     chats.extend(result.chats)
- 
     for chat in chats:
         try:
-            if chat.megagroup== True:
+            if chat.megagroup == True:
                 groups.append(chat)
         except:
             continue
