@@ -7,6 +7,7 @@ import os, sys
 import csv
 import random
 import time
+from telethon import connection
 
 re="\033[1;31m"
 gr="\033[1;32m"
@@ -24,6 +25,38 @@ class main():
     by https://github.com/elizhabs
             """)
 
+    def connectionTelegramAccount(phone, api_id, api_hash):
+        csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
+        g = 0
+        numbering = 1
+        i = 1
+        file_name = 'proxy.csv'
+        if not os.path.exists(file_name):
+            f = open(file_name, "w")
+            f.close()
+        for cpass in csv_accounts:
+            print (i, ")", cpass[0], cpass[1])
+            i += 1
+        proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
+        if proxy_number != 0:
+            for cpass in csv_accounts:
+                if numbering == proxy_number:
+                    proxy_server = cpass[0]
+                    proxy_port = cpass[1]
+                    proxy_key = cpass[2]
+                numbering += 1
+                g = 1
+            if g == 0:
+                print("Прокси нет, подключаемся без них")
+                client = TelegramClient(phone, api_id, api_hash)
+            else:
+                proxy = (proxy_server, proxy_port, proxy_key)
+                client = TelegramClient(phone, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
+        else:
+            client = TelegramClient(phone, api_id, api_hash)
+        return client
+
+
     def send_sms(g, file_name):
         try:
             cpass = configparser.RawConfigParser()
@@ -39,7 +72,7 @@ class main():
             print(re+"[!] run python3 setup.py first !!\n")
             sys.exit(1)
 
-        client = TelegramClient(phone, api_id, api_hash)
+        client = main.connectionTelegramAccount(phone, api_id, api_hash)
          
         client.connect()
         if not client.is_user_authorized():
@@ -71,10 +104,8 @@ class main():
                 if user['username'] == "":
                     continue
                 receiver = client.get_input_entity(user['username'])
-                time.sleep(pause)
             elif mode == 1:
                 receiver = InputPeerUser(user['id'],user['access_hash'])
-                time.sleep(pause)
             else:
                 print(re+"[!] Invalid Mode. Exiting.")
                 client.disconnect()

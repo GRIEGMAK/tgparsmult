@@ -10,9 +10,11 @@ re="\033[1;31m"
 gr="\033[1;32m"
 cy="\033[1;36m"
 
-import os, sys
-import time
 import csv
+import os
+import sys
+import time
+
 
 def banner():
 	os.system('clear')
@@ -108,18 +110,17 @@ def add_proxy():
 	with open(file_name,"a",encoding='UTF-8') as f:
 		cpassproxy = csv.writer(f,delimiter=",",lineterminator="\n")
 		for i in range(count_proxy):
-			xproxy_serv = input("Введите значение прокси сервера")
+			xproxy_serv = input("Введите значение ip прокси сервера")
 			xproxy_port = input("Введите значение порта у прокси сервера")
-			xproxy_key = input("Введите значение ключа входа на сервер")
-			cpassproxy.writerow([xproxy_serv, xproxy_port, xproxy_key])
-			
-
-			
-
+			xproxy_key = input("Введите логин")
+			xproxy_pass = input("Введите пароль")
+			xproxy_type = int(input("Выберите тип подключения 1 - http; 2 - socks5"))
+			cpassproxy.writerow([xproxy_type, xproxy_serv, xproxy_port, xproxy_key, xproxy_pass])
 
 def merge_csv():
-	import pandas as pd
 	import sys
+
+	import pandas as pd
 	banner()
 	file1 = pd.read_csv(sys.argv[2])
 	file2 = pd.read_csv(sys.argv[3])

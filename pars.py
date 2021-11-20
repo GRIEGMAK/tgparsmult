@@ -5,7 +5,7 @@ import os, sys
 import configparser
 import csv
 import time
-from telethon import connection
+import socks
 
 re="\033[1;31m"
 gr="\033[1;32m"
@@ -31,21 +31,27 @@ def connectionTelegramAccount(phone, api_id, api_hash):
     for cpass in csv_accounts:
         print (i, ")", cpass[0], cpass[1])
         i += 1
-    proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
+    if(csv_accounts == []):
+        proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
     if proxy_number != 0:
         for cpass in csv_accounts:
             if numbering == proxy_number:
-                proxy_server = cpass[0]
-                proxy_port = cpass[1]
-                proxy_key = cpass[2]
+                proxy_type = cpass[0]
+                proxy_ip = cpass[1]
+                proxy_port = cpass[2]
+                proxy_login = cpass[3]
+                proxy_pass = cpass[4]
             numbering += 1
             g = 1
         if g == 0:
             print("Прокси нет, подключаемся без них")
             client = TelegramClient(phone, api_id, api_hash)
         else:
-            proxy = (proxy_server, proxy_port, proxy_key)
-            client = TelegramClient(phone, api_id, api_hash, connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,proxy=proxy)
+            if proxy_type == 1:
+                proxy = (socks.SOCKS5, proxy_ip, proxy_port, proxy_login, proxy_pass)
+            else:
+                proxy = (socks.SOCKS5, proxy_ip, proxy_port, proxy_login, proxy_pass)
+            client = TelegramClient(phone, api_id, api_hash ,proxy=proxy)
     else:
         client = TelegramClient(phone, api_id, api_hash)
     return client
