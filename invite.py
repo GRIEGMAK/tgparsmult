@@ -39,6 +39,8 @@ def connectionTelegramAccount(phone, api_id, api_hash):
         i += 1
     if(csv_accounts == []):
         proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
+    else:
+        proxy_number = 0
     if proxy_number != 0:
         for cpass in csv_accounts:
             if numbering == proxy_number:
@@ -96,7 +98,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
     n = 0
     for chat in chats:
         try:
-            if chat.broadcast == True:
+            if chat.megagroup == True:
                 groups.append(chat)
         except:
             continue
@@ -209,7 +211,7 @@ chats.extend(result.chats)
 n = 0
 for chat in chats:
     try:
-        if chat.broadcast== True:
+        if chat.megagroup == True:
             groups.append(chat)
     except:
         continue
