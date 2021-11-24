@@ -11,7 +11,7 @@ import csv
 import traceback
 import time
 import random
-import socks
+import python_socks
 
 re="\033[1;31m"
 gr="\033[1;32m"
@@ -37,28 +37,44 @@ def connectionTelegramAccount(phone, api_id, api_hash):
     for cpass in csv_accounts:
         print (i, ")", cpass[0], cpass[1])
         i += 1
-    if(csv_accounts == []):
-        proxy_number = int(input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 "))
-    else:
-        proxy_number = 0
+    proxy_number = 0
+    if(i > 1):
+        proxy_number = input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 ")
     if proxy_number != 0:
+        csv_accounts = csv.reader(open('proxy.csv', "r"), delimiter=",")
         for cpass in csv_accounts:
-            if numbering == proxy_number:
+            if numbering == int(proxy_number):
                 proxy_type = cpass[0]
                 proxy_ip = cpass[1]
                 proxy_port = cpass[2]
                 proxy_login = cpass[3]
                 proxy_pass = cpass[4]
+                g = 1
+                print(g)
             numbering += 1
-            g = 1
         if g == 0:
-            print("Прокси нет, подключаемся без них")
+            print()
             client = TelegramClient(phone, api_id, api_hash)
         else:
-            if proxy_type == 1:
-                proxy = (socks.SOCKS5, proxy_ip, proxy_port, proxy_login, proxy_pass)
+            print(int(proxy_type) == 2)
+            if int(proxy_type) == 1:
+                proxy = {
+                    'proxy_type': python_socks.ProxyType.HTTP,
+                    'addr': proxy_ip,
+                    'port': int(proxy_port), 
+                    'username': proxy_login,      
+                    'password': proxy_pass,      
+                    'rdns': True            
+                }
             else:
-                proxy = (socks.SOCKS5, proxy_ip, proxy_port, proxy_login, proxy_pass)
+                proxy = {
+                    'proxy_type': python_socks.ProxyType.SOCKS5,
+                    'addr': proxy_ip,
+                    'port': int(proxy_port),
+                    'username': proxy_login,
+                    'password': proxy_pass,
+                    'rdns': True
+                }
             client = TelegramClient(phone, api_id, api_hash ,proxy=proxy)
     else:
         client = TelegramClient(phone, api_id, api_hash)
