@@ -29,8 +29,8 @@ def requirements():
 		banner()
 		print(gr+'['+cy+'+'+gr+']'+cy+' this may take some time ...')
 		os.system("""
-			pip3 install cython numpy pandas python-socks
-			python3 -m pip install cython numpy pandas python-socks 
+			pip3 install cython numpy pandas python-socks pysocks
+			python3 -m pip install cython numpy pandas python-socks pysocks 
 			""")
 	banner()
 	print(gr+'['+cy+'+'+gr+']'+cy+' it will take upto 10 min to install csv merge.')
