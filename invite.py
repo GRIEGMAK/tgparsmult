@@ -3,7 +3,7 @@ from telethon import client
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty, InputPeerChannel, InputPeerUser
-from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedError
+from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedError, UsernameNotOccupiedError, UsernameInvalidError, UserDeactivatedBanError
 from telethon.tl.functions.channels import InviteToChannelRequest
 import configparser
 import os, sys
@@ -38,6 +38,8 @@ def connectionTelegramAccount(phone, api_id, api_hash):
         print (i, ")", cpass[0], cpass[1])
         i += 1
     proxy_number = 0
+    sys.stdout.write('\r\a')
+    sys.stdout.flush()
     if(i > 1):
         proxy_number = input("Введите номер прокси которой будет использоваться, Если вы не хотите использовать прокси введите 0 ")
     if proxy_number != 0:
@@ -176,8 +178,19 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
             print(start_value)
         except PeerFloodError:
             print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
+            start_value -= 1
+            temp.read('config.data')
+            temp.set('START_value', 'invite', start_value)
+            with open('config.data', "w") as config_file:
+                temp.write(config_file)
         except UserPrivacyRestrictedError:
             print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
+        except UsernameNotOccupiedError:
+            print("Username don't use")
+        except UsernameInvalidError:
+            print("Nobody is using this username, or the username is unacceptable. If the latter, it must match r'[a-zA-Z][\w\d]{3,30}[a-zA-Z\d]'.")
+        except UserDeactivatedBanError:
+            print("User Deactivated Ban Error")
         except:
             traceback.print_exc()
             print(re+"[!] Unexpected Error")
