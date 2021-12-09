@@ -169,7 +169,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
             client(InviteToChannelRequest(target_group_entity,[user_to_add]))
             start_value += 1
             print(gr+"[+] Waiting for 10-30 Seconds...")
-            time.sleep(random.randrange(10, 30))
+            time.sleep(random.randrange(20, 30))
             temp = configparser.RawConfigParser()
             temp.read('config.data')
             temp.set('START_value', 'invite', start_value)
