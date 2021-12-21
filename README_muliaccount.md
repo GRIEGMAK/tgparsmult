@@ -1,18 +1,33 @@
-'python setup.py -i'
-'python setup.py -c'
+1* 'python setup.py -i'
+2* 'python setup.py -c'
 
-'python pars.py number'
+3* 'python pars.py number'
 number = номер с которого будет парситься 
 
-'python setup.py -cic'
+4* 'python setup.py -cic'
 
-'python invite.py members.csv'
+стандартно:
 
-'python smsbot.py'
+5* 'python invite.py members.csv' 
+
+Если вы запустили команду 8 то !!! вписываете имя с расширением итогового файла !!!! 
+
+6* 'python smsbot.py'
 
 
 Добавление проксей
 
-python setup.py -ap
+7* python setup.py -ap
 
 в основном добавлены прокси внутрь и парса и инвайта
+
+добавлена возможность сделать отсортировать базу только с никами 
+
+8* python script_nick.py members.csv members_nick.csv
+
+Имя первого и второго файла может быть другим 
+1 - база с чего будет парсится 
+2 файл - куда 
+2 файл может и не существовать 
+система создаст его самостоятельно 
+
