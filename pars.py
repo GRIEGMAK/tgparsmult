@@ -6,7 +6,6 @@ import configparser
 import csv
 import time
 import socks
-import winsound
 import python_socks
 
 re="\033[1;31m"
@@ -14,7 +13,6 @@ gr="\033[1;32m"
 cy="\033[1;36m"
 
 def banner():
-    winsound.Beep(440, 250)
     print(f"""
 {re}╔╦╗{cy}┌─┐┌─┐┌─┐┌─┐┬─┐{re}╔═╗
 {re} ║ {cy}├─┐├┤ ├─┘├─┤├┬┘{re}╚═╗

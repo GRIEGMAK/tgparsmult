@@ -178,7 +178,6 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
             print(start_value)
         except PeerFloodError:
             print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
-            start_value -= 1
             temp.read('config.data')
             temp.set('START_value', 'invite', start_value)
             with open('config.data', "w") as config_file:
