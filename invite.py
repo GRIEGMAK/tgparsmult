@@ -3,7 +3,7 @@ from telethon import client
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty, InputPeerChannel, InputPeerUser
-from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedError, UsernameNotOccupiedError, UsernameInvalidError, UserDeactivatedBanError
+from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedError, UsernameNotOccupiedError, UsernameInvalidError, UserDeactivatedBanError, FloodWaitError
 from telethon.tl.functions.channels import InviteToChannelRequest
 import configparser
 import os, sys
@@ -186,6 +186,9 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
         except PeerFloodError:
             print(re+"[!] Getting Flood Error from telegram. \n[!] Script is stopping now. \n[!] Please try again after some time.")
             return True
+        except FloodWaitError:
+            print("Have to sleep")
+            return True
         except UserPrivacyRestrictedError:
             print(re+"[!] The user's privacy settings do not allow you to do this. Skipping.")
         except UsernameNotOccupiedError:
@@ -194,6 +197,7 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
             print("Nobody is using this username, or the username is unacceptable. If the latter, it must match r'[a-zA-Z][\w\d]{3,30}[a-zA-Z\d]'.")
         except UserDeactivatedBanError:
             print("User Deactivated Ban Error")
+            return True
         except:
             traceback.print_exc()
             print(re+"[!] Unexpected Error")
