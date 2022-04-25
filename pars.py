@@ -138,7 +138,7 @@ def parser(number, file_name):
     print(gr+'[+] Fetching Members...')
     time.sleep(1)
     all_participants = []
-    all_participants = client.get_participants(target_group)
+    all_participants = client.iter_participants(target_group)
  
     print(gr+'[+] Saving In file...')
     time.sleep(1)
